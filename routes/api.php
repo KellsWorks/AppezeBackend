@@ -14,6 +14,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+/* Public API routes */
+
+Route::group(['middleware' => ['cors', 'json.response']], function () {
+
+    Route::prefix('v1')->group(function () {
+
+        Route::prefix('auth')->group(function () {
+
+            Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'login'])->name('login.api');
+
+            Route::post('/register',[\App\Http\Controllers\Auth\AuthController::class, 'register'])->name('register.api');
+
+        });
+
+    });
+
+});
+
+/* Protected API Routes */
+Route::middleware('auth:api')->group(function () {
+
+    Route::prefix('v1')->group(function () {
+
+        Route::prefix('auth')->group(function () {
+
+            Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'logout'])->name('logout.api');
+
+        });
+    });
+
 });
