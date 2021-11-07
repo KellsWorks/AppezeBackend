@@ -51,7 +51,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('Appeze')->plainTextToken;
+                $token = $user->createToken('Appeze')->accessToken;
                 $response = ['token' => $token];
                 return response($response, 200);
             } else {
@@ -66,7 +66,7 @@ class AuthController extends Controller
 
     public function logout (Request $request) {
 
-        $token = $request->user()->token();
+        $token = User::find($request->id)->token();
 
         $token->revoke();
 
